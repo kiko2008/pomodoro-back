@@ -27,6 +27,7 @@ class PomodoroTaskViewSet(ModelViewSet):
 
     def list(self, request):
         username = request.query_params['username']
-        tasks_by_user_queryset = PomodoroTask.objects.filter(user=username).order_by('-pub_date')
+        task_state = request.query_params['task_state']
+        tasks_by_user_queryset = PomodoroTask.objects.filter(user=1, end_task=task_state).order_by('-pub_date')
         serializer = TaskSerializer(tasks_by_user_queryset, many=True)
         return Response(serializer.data)
