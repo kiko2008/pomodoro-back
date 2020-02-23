@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -44,3 +45,16 @@ class UserSerializer(serializers.Serializer):
             raise serializers.ValidationError('El usuario {0} ya existe'.format(value))
 
         return value
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        user = authenticate(username=attrs['username'], password=attrs['password'])
+
+        if not user:
+            raise serializers.ValidationError({'msgError': 'Usuario o contraseña incorrectas'})
+
+        return {'user': user}

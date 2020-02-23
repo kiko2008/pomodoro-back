@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from pomodoro.models import PomodoroConf, PomodoroTask
+from pomodoro.models import PomodoroTask
 from rest_framework import serializers
 
 
@@ -9,34 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         model = User
         fields = ('id')
-
-class ConfSerializer(serializers.Serializer):
-
-    id = serializers.ReadOnlyField()
-    pomodoro_time = serializers.IntegerField()
-    pomodoro_shortbreak_time = serializers.IntegerField()
-    pomodoro_longbreak_time = serializers.IntegerField()
-    user = serializers.PrimaryKeyRelatedField(write_only=True, queryset=User.objects.all())
-
-    def create(self, request_data):
-        pomodoro_conf = PomodoroConf()
-        return self.update(pomodoro_conf, request_data)
-
-    def update(self, instance, request_data):
-        if request_data.get('pomodoro_time') is not None:
-            instance.pomodoro_time = request_data.get('pomodoro_time')
-
-        if request_data.get('pomodoro_shortbreak_time') is not None:
-            instance.pomodoro_shortbreak_time = request_data.get('pomodoro_shortbreak_time')
-
-        if request_data.get('pomodoro_longbreak_time') is not None:
-            instance.pomodoro_longbreak_time = request_data.get('pomodoro_longbreak_time')
-
-        if request_data.get('user') is not None:
-            instance.user = request_data.get('user')
-
-        instance.save()
-        return instance
 
 
 class TaskSerializer(serializers.Serializer):
